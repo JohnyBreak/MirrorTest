@@ -1,14 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class PlayerInfo : MonoBehaviour
 {
-    [SerializeField] private string _name;
-    [SerializeField] private GameSystem _gameSystem;
+    private string _name;
+    private GameSystem _gameSystem;
 
     void Start()
     {
+        var nm = (CustomNetworkManager)NetworkManager.singleton;
+        _gameSystem = nm.GameSystem;
+
         _name = name;
         _gameSystem.AddPlayer(_name);
     }

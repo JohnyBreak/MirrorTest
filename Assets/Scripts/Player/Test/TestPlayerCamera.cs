@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class TestPlayerCamera : MonoBehaviour
@@ -11,13 +10,18 @@ public class TestPlayerCamera : MonoBehaviour
     [SerializeField] private Vector2 _rotationMinMax = new Vector2(-45, 60);
     [SerializeField] private LayerMask _obstacles;
 
-    [SerializeField] private GameStateManager _gameStateManager;
-    //private Transform _camTransform;
+    private GameStateManager _gameStateManager;
     private float _rotationX;
     private float _rotationY;
     private Vector3 _currentRotation;
     private Vector3 _smoothVelocity;
-  
+
+    private void Start()
+    {
+        var nm = (CustomNetworkManager)NetworkManager.singleton;
+        _gameStateManager = nm.GameSystem.GameStateManager;
+    }
+
     void LateUpdate()
     {
         if (_gameStateManager.CurrentGameState != GameStateManager.GameState.GamePlay) return;
@@ -55,5 +59,10 @@ public class TestPlayerCamera : MonoBehaviour
         {
             transform.position -= transform.forward;
         }
+    }
+
+    public void SetTarget(Transform t) 
+    {
+        _target = t;
     }
 }

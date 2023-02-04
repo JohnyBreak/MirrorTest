@@ -1,20 +1,18 @@
 using System.Collections;
 using UnityEngine;
+using Mirror;
 
-public class PlayerStateMachine : MonoBehaviour
+public class PlayerStateMachine : NetworkBehaviour
 {
     #region Fields
 
     [SerializeField] private PlayerStateFactory.PlayerStates _currentRootStateName;
     [SerializeField] private PlayerStateFactory.PlayerStates _currentSubStateName;
 
-    [SerializeField] private GameStateManager _gameStateManager;
-    [SerializeField] private Transform _cameraTransform;
     [SerializeField] private float _movementSpeed = 7.5f;
 
-
-
-
+    private Transform _cameraTransform;
+    private GameStateManager _gameStateManager;
     private CharacterController _controller;
     private DashCollider _dashCollider;
     private TestPlayerInput _input;
@@ -89,6 +87,8 @@ public class PlayerStateMachine : MonoBehaviour
         _dashCollider = GetComponentInChildren<DashCollider>();
         _input = GetComponent<TestPlayerInput>();
 
+        var nm = (CustomNetworkManager)NetworkManager.singleton;
+        _gameStateManager = nm.GameSystem.GameStateManager;
         _states = new PlayerStateFactory(this);
         _currentState = _states.Grounded();
 
@@ -115,6 +115,8 @@ public class PlayerStateMachine : MonoBehaviour
     
     void Update()
     {
+        if (!isOwned) return;
+
         if (_gameStateManager.CurrentGameState != GameStateManager.GameState.GamePlay) return;
         _cameraRelativeMovement = GetCameraRelativeMoveDirection();
 
@@ -156,6 +158,12 @@ public class PlayerStateMachine : MonoBehaviour
         Debug.DrawRay(transform.position, cameraRelativeMovement, Color.black);
         return cameraRelativeMovement;
     }
+
+    public void SetCameraTransform(Transform t) 
+    {
+        _cameraTransform = t;
+    }
+
 
     private void OnDisable()
     {
