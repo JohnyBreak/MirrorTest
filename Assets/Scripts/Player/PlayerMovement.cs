@@ -3,13 +3,14 @@ using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    [SerializeField] private float _speed;
-    [SerializeField] private float _rotationSpeed;
+    [SerializeField] private float _speed = 10f;
+    [SerializeField] private float _rotationSpeed = 15f;
     [SerializeField] private PlayerInput _playerInput;
 
     private Transform _cameraTransform;
 
     private CharacterController _ctrl;
+    private float _turnSmoothVelocity;
 
     private void Awake()
     {
@@ -18,7 +19,6 @@ public class PlayerMovement : NetworkBehaviour
         _playerInput.LMBPressEvent += OnLMBPress;
     }
 
-    [Client]
     void Update()
     {
         if (!isOwned) return;
@@ -29,16 +29,18 @@ public class PlayerMovement : NetworkBehaviour
 
     private void Move()
     {
-        Vector3 cameraEuler = Quaternion.Euler(0, _cameraTransform.eulerAngles.y, 0) * _playerInput.MoveVector;//new Vector3(_playerInput.MoveVector.x, 0, _playerInput.MoveVector.z);
-        Vector3 movementDirection = cameraEuler.normalized;
-
-        if (movementDirection != Vector3.zero) 
+        
+        if (_playerInput.MoveVector != Vector3.zero) 
         {
+            Vector3 cameraEuler = Quaternion.Euler(0, _cameraTransform.eulerAngles.y, 0) * _playerInput.MoveVector;//new Vector3(_playerInput.MoveVector.x, 0, _playerInput.MoveVector.z);
+            Vector3 movementDirection = cameraEuler.normalized;
+
             Quaternion desiredRotation = Quaternion.LookRotation(movementDirection, Vector3.up);
 
             transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, _rotationSpeed * Time.deltaTime);
+
+            _ctrl.Move(movementDirection * Time.deltaTime * _speed);
         }
-        _ctrl.Move(movementDirection * Time.deltaTime * _speed);
         //transform.Translate(movementDirection * Time.deltaTime * _speed);
     }
 
@@ -52,8 +54,11 @@ public class PlayerMovement : NetworkBehaviour
         _cameraTransform = camT;
     }
 
+    [Client]
     private void OnDestroy()
     {
+        if (!isOwned) return;
+        if (!isLocalPlayer) return;
         _playerInput.LMBPressEvent -= OnLMBPress;
     }
 }

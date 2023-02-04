@@ -316,8 +316,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   _speed: 10
-  _rotationSpeed: 10
-  _playerInput: {fileID: 0}
+  _rotationSpeed: 15
+  _playerInput: {fileID: 7413400300900775205}
 --- !u!114 &7413400300900775205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -349,7 +349,7 @@ MonoBehaviour:
   syncMode: 1
   syncInterval: 0
   target: {fileID: 6623995082229541900}
-  clientAuthority: 1
+  clientAuthority: 0
   syncPosition: 1
   syncRotation: 1
   syncScale: 0
@@ -391,7 +391,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 683f365f5112f5e49aa2b5fea6b35b75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0.1
   _cameraTarget: {fileID: 1030115031026214978}
+  _cam: {fileID: 3069937043756812889, guid: 754c85c06f4b88749ab1280b2b2faef7, type: 3}

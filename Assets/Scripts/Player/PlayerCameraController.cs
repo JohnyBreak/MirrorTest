@@ -3,34 +3,62 @@ using UnityEngine;
 
 public class PlayerCameraController : NetworkBehaviour
 {
-    [SerializeField] private Transform _target;
+    //[SerializeField] 
+    private Transform _target;
     [SerializeField] private float _mouseSensitivity = 3f;
     [SerializeField] private float _distanceFromTarget = 6f;
     [SerializeField] private float _smoothTime = 0.2f;
     [SerializeField] private Vector2 _rotationMinMax = new Vector2(-45, 60);
     [SerializeField] private LayerMask _obstacles;
 
+    //private Transform _camTransform;
     private float _rotationX;
     private float _rotationY;
     private Vector3 _currentRotation;
     private Vector3 _smoothVelocity;
+    private CustomNetworkManager _netManager;
 
-    private void Start()
+    void Start()
     {
-        if (!isLocalPlayer) gameObject.SetActive(false);
+        _netManager = (CustomNetworkManager)CustomNetworkManager.singleton;
+        _netManager.ClientConnectedEvent += OnClientConnected;
     }
 
     // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+    [Command]
+    private void OnClientConnected()
+    {
+        var cameras = FindObjectsOfType<PlayerCameraController>();
+        Debug.Log("camera off");
+        foreach (var cam in cameras)
+        {
+            if (cam != this) cam.gameObject.SetActive(false);
+        }
+
+    }
+
+    private void OnDestroy()
+    {
+        _netManager.ClientConnectedEvent -= OnClientConnected;
+    }
+
     void LateUpdate()
     {
+        //if (!isOwned) return;
+
         Rotate();
         CheckObstacles();
     }
 
     private void Rotate() 
     {
-        float mouseX = Input.GetAxis("Mouse X") * _mouseSensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * _mouseSensitivity;
+        float mouseX = Input.GetAxisRaw("Mouse X") * _mouseSensitivity;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * _mouseSensitivity;
 
         _rotationX += mouseX;
         _rotationY -= mouseY;
@@ -59,8 +87,8 @@ public class PlayerCameraController : NetworkBehaviour
         }
     }
 
-    public void SetTarget(Transform target) 
+    public void SetTarget(Transform t) 
     {
-        _target = target;
+        _target = t;
     }
 }

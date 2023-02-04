@@ -1,15 +1,9 @@
-using Mirror;
 using UnityEngine;
 
-public class Player : NetworkBehaviour
+public class Player : MonoBehaviour
 {
     [SerializeField] private Transform _cameraTarget;
+    [SerializeField] private PlayerCameraController _cam;
 
-    void Start()
-    {
-        if (!isLocalPlayer) return;
-
-        GetComponent<PlayerMovement>().SetCameraTransform(Camera.main.transform);
-        Camera.main.GetComponent<PlayerCameraController>().SetTarget(_cameraTarget);
-    }
+    public Transform CameraTarget => _cameraTarget;
 }

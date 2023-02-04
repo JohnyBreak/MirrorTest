@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerInput : NetworkBehaviour
 {
     public System.Action LMBPressEvent;
-
+    public System.Action LMBReleaseEvent;
     private Vector3 _moveVector;
 
     public Vector3 MoveVector
@@ -27,6 +27,11 @@ public class PlayerInput : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0)) 
         {
             LMBPressEvent?.Invoke();
+        }
+
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            LMBReleaseEvent?.Invoke();
         }
     }
 }
