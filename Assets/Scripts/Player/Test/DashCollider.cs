@@ -1,17 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(CapsuleCollider))]
 public class DashCollider : MonoBehaviour
 {
     [SerializeField] private LayerMask _mask;
-    private CapsuleCollider _collider;
     [SerializeField]  private Transform _parentTransform;
-    [SerializeField] private PlayerInfo _playerInfo;
+
+    private CapsuleCollider _collider;
+    private PlayerInfo _playerInfo;
+    //private HitManager _hitManager;
 
     void Start()
     {
+        //var nm = (CustomNetworkManager)NetworkManager.singleton;
+        //_hitManager = nm.GameSystem.HitManager;
+            
         //_parentTransform = GetComponentInParent<Transform>();
         _playerInfo = _parentTransform.GetComponent<PlayerInfo>();
            _collider = GetComponent<CapsuleCollider>();
@@ -29,12 +33,14 @@ public class DashCollider : MonoBehaviour
 
         if (((1 << other.gameObject.layer) & _mask) != 0)
         {
-            if (other.TryGetComponent<ColorChange>(out var colorChange)) 
+            if (other.TryGetComponent<ColorChange>(out var colorChange))
             {
-                if (colorChange.ChangeColor()) 
-                {
-                    _playerInfo.IncreaseScore();
-                }
+                //_hitManager.CmdChangeTargetColor(colorChange);
+                _playerInfo.TargetChangeColor(colorChange);
+                //if (colorChange.ChangeColor()) 
+                //{
+                //    _playerInfo.IncreaseScore();
+                //}
             }
         }
     }

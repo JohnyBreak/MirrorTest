@@ -1,10 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 
 [RequireComponent(typeof(MeshRenderer))]
-public class ColorChange : MonoBehaviour
+public class ColorChange : NetworkBehaviour
 {
     [SerializeField] private Color _StandartColor;
     [SerializeField] private Color _HitedColor;
@@ -12,7 +12,7 @@ public class ColorChange : MonoBehaviour
     private Material _material;
 
     private WaitForSeconds _wait;
-    private bool _camChangeColor = true;
+    private bool _canChangeColor = true;
 
     private void Start()
     {
@@ -22,24 +22,39 @@ public class ColorChange : MonoBehaviour
         _wait = new WaitForSeconds(_changeTime);
     }
 
-    public bool ChangeColor() 
+    [Client]
+    public void ChangeColor(NetworkConnection target) 
     {
-        if (!_camChangeColor) return false;
+        Debug.Log("adsasdasd");
+
+
+        if (!_canChangeColor) return;
 
         StartCoroutine(ChangeColorRoutine());
-        return true;
+
+        //RpcChangeColor(target);
     }
+
+    public void RpcChangeColor(NetworkConnection target)
+    {
+        if (!_canChangeColor) return;
+
+        StartCoroutine(ChangeColorRoutine());
+        //return true;
+    }
+
+
 
     private IEnumerator ChangeColorRoutine() 
     {
-        _camChangeColor = false;
+        _canChangeColor = false;
         _material.color = _HitedColor;
 
         yield return _wait;
 
         _material.color = _StandartColor;
 
-        _camChangeColor = true;
+        _canChangeColor = true;
     }
 
 }
