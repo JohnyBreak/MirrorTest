@@ -10,16 +10,19 @@ public class GameSystem : MonoBehaviour
 
     [SerializeField] private int _requiredScore = 3;
     [SerializeField] private float _restartTime = 5f;
-
+    
     private Dictionary<string, int> _PlayersDictionary;
     private GameStateManager _stateManager;
+    private HitManager _hitManager;
 
     public GameStateManager GameStateManager => _stateManager;
+    public HitManager HitManager => _hitManager;
 
     private void Awake()
     {
         _PlayersDictionary = new Dictionary<string, int>();
         _stateManager = GetComponent<GameStateManager>();
+        _hitManager = GetComponent<HitManager>();
         _stateManager.SetState(GameStateManager.GameState.GamePlay);
     }
 

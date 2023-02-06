@@ -1,7 +1,7 @@
 using Mirror;
 using UnityEngine;
 
-public class PlayerInfo : MonoBehaviour
+public class PlayerInfo : NetworkBehaviour
 {
     private string _name;
     private GameSystem _gameSystem;
@@ -15,9 +15,8 @@ public class PlayerInfo : MonoBehaviour
         _gameSystem.AddPlayer(_name);
     }
 
-    public void IncreaseScore() 
+    public void IncreaseScore()
     {
         _gameSystem.UpdateScoreInfo(_name);
     }
-
 }

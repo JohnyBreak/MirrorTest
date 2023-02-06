@@ -89,6 +89,7 @@ public class PlayerStateMachine : NetworkBehaviour
 
         var nm = (CustomNetworkManager)NetworkManager.singleton;
         _gameStateManager = nm.GameSystem.GameStateManager;
+
         _states = new PlayerStateFactory(this);
         _currentState = _states.Grounded();
 
@@ -125,7 +126,7 @@ public class PlayerStateMachine : NetworkBehaviour
         _currentRootStateName = _states.RootState;
         _currentSubStateName = _states.SubState;
 
-        _controller.SimpleMove(_appliedMovement);
+        _controller.Move(_appliedMovement * Time.deltaTime);
     }
 
     //private float GetMagnitudedMoveVectorForAnimation() 
@@ -163,7 +164,6 @@ public class PlayerStateMachine : NetworkBehaviour
     {
         _cameraTransform = t;
     }
-
 
     private void OnDisable()
     {
