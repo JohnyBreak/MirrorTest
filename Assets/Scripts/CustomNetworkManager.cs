@@ -8,9 +8,6 @@ public class CustomNetworkManager : NetworkManager
 
     [SerializeField] private GameSystem _gameSystem;
 
-    private bool playerSpawned;
-    private bool playerConnected;
-
     public GameSystem GameSystem =>_gameSystem;
 
 }

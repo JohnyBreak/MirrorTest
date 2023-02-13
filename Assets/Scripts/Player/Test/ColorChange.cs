@@ -11,6 +11,7 @@ public class ColorChange : NetworkBehaviour
     [SerializeField] private float _changeTime;
     private Material _material;
 
+    private GameSystem _gameSystem;
     private WaitForSeconds _wait;
     private bool _canChangeColor = true;
 
@@ -18,32 +19,26 @@ public class ColorChange : NetworkBehaviour
     {
         _material = GetComponent<MeshRenderer>().material;
         _material.color = _StandartColor;
-
+        var nm = (CustomNetworkManager)NetworkManager.singleton;
+        _gameSystem = nm.GameSystem;
         _wait = new WaitForSeconds(_changeTime);
     }
 
     [Client]
-    public void ChangeColor(NetworkConnection target) 
-    {
-        Debug.Log("adsasdasd");
-
-
-        if (!_canChangeColor) return;
-
-        StartCoroutine(ChangeColorRoutine());
-
-        //RpcChangeColor(target);
-    }
-
-    public void RpcChangeColor(NetworkConnection target)
+    public void ChangeColor(string name) 
     {
         if (!_canChangeColor) return;
 
+        CmdUpdateScore(name);
+
         StartCoroutine(ChangeColorRoutine());
-        //return true;
     }
 
-
+    [Command]
+    public void CmdUpdateScore(string name) 
+    {
+        _gameSystem.UpdateScoreInfo(name);
+    }
 
     private IEnumerator ChangeColorRoutine() 
     {

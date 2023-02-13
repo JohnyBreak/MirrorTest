@@ -9,14 +9,9 @@ public class DashCollider : MonoBehaviour
 
     private CapsuleCollider _collider;
     private PlayerInfo _playerInfo;
-    //private HitManager _hitManager;
 
     void Start()
     {
-        //var nm = (CustomNetworkManager)NetworkManager.singleton;
-        //_hitManager = nm.GameSystem.HitManager;
-            
-        //_parentTransform = GetComponentInParent<Transform>();
         _playerInfo = _parentTransform.GetComponent<PlayerInfo>();
            _collider = GetComponent<CapsuleCollider>();
         _collider.enabled = false;
@@ -35,7 +30,6 @@ public class DashCollider : MonoBehaviour
         {
             if (other.TryGetComponent<ColorChange>(out var colorChange))
             {
-                //_hitManager.CmdChangeTargetColor(colorChange);
                 _playerInfo.TargetChangeColor(colorChange);
                 //if (colorChange.ChangeColor()) 
                 //{

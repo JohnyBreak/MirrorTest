@@ -3,16 +3,14 @@ using UnityEngine;
 
 public class HitManager : NetworkBehaviour
 {
-    public void ChangeTargetColor(ColorChange colorChange)
+    public void ChangeTargetColor(ColorChange colorChange, string name)
     {
-        Debug.Log("CmdChange");
-        RpcChangeTargetColor(colorChange);
+        RpcChangeTargetColor(colorChange, name);
     }
 
     [ClientRpc]
-    public void RpcChangeTargetColor(ColorChange colorChange)
+    public void RpcChangeTargetColor(ColorChange colorChange, string name)
     {
-        Debug.Log("RpcChange");
-        colorChange.ChangeColor(colorChange.GetComponent<NetworkIdentity>().connectionToClient);
+        colorChange.ChangeColor(name);
     }
 }

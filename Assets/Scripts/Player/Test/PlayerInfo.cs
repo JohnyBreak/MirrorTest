@@ -4,11 +4,35 @@ using UnityEngine;
 
 public class PlayerInfo : NetworkBehaviour
 {
-    private string _name;
+    [SyncVar] private string _name;
     private GameSystem _gameSystem;
     private HitManager _hitManager;
 
-    void Start()
+    //void Start()
+    //{
+    //    var nm = (CustomNetworkManager)NetworkManager.singleton;
+    //    _gameSystem = nm.GameSystem;
+    //    _hitManager = nm.GameSystem.HitManager;
+    //    _name = name;
+    //    _gameSystem.AddPlayer(_name);
+    //}
+
+    public override void OnStartLocalPlayer()
+    {
+        if (!isOwned) return;
+
+        CmdAddPlayerToDictionary();
+    }
+
+    //public override void OnStopLocalPlayer()
+    //{
+    //    if (!isOwned) return;
+
+    //    CmdRemovePlayerFromDictionary();
+    //}
+
+    [Command]
+    private void CmdAddPlayerToDictionary() 
     {
         var nm = (CustomNetworkManager)NetworkManager.singleton;
         _gameSystem = nm.GameSystem;
@@ -17,26 +41,25 @@ public class PlayerInfo : NetworkBehaviour
         _gameSystem.AddPlayer(_name);
     }
 
-    public void IncreaseScore()
+    [Command]
+    private void CmdRemovePlayerFromDictionary()
     {
-        _gameSystem.UpdateScoreInfo(_name);
+        _gameSystem.RemovePlayer(_name);
     }
 
-    internal void TargetChangeColor(ColorChange colorChange)
+    public void TargetChangeColor(ColorChange colorChange)
     {
         Debug.Log(isServer);
         if (isServer)
-            _hitManager.RpcChangeTargetColor(colorChange);
+            _hitManager.RpcChangeTargetColor(colorChange, _name);
         else
-            CmdChangeColor(colorChange);
-
-
+            CmdChangeColor(colorChange, _name);
     }
 
     [Command]
-    public void CmdChangeColor(ColorChange colorChange) 
+    public void CmdChangeColor(ColorChange colorChange, string name) 
     {
-        _hitManager.ChangeTargetColor(colorChange);
+        _hitManager.ChangeTargetColor(colorChange, name);
     }
 
 
